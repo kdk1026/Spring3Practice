@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+	">
+
+	<context:component-scan base-package="kr.co.test" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice" />
+	</context:component-scan>
+
+    <mvc:annotation-driven>
+    	<mvc:argument-resolvers>
+    		<bean class="common.spring.resolver.ParamMapArgResolver" />
+    	</mvc:argument-resolvers>
+    	<mvc:message-converters>
+    		<bean class="org.springframework.http.converter.StringHttpMessageConverter"
+    			p:supportedMediaTypes="text/html;charset=UTF-8"
+    		/>
+    		<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+    		<bean class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter"
+    			p:marshaller-ref="xstreamMarshaller"
+    			p:unmarshaller-ref="xstreamMarshaller"
+    		/>
+    	</mvc:message-converters>
+    </mvc:annotation-driven>
+    
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+		p:prefix="/WEB-INF/jsp/"
+		p:suffix=".jsp"
+		p:order="6"
+	/>
+	
+	<mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/" />
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+	
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+	
+	<!-- maxUploadSize = 20MB -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
+		p:defaultEncoding="UTF-8"
+		p:maxUploadSize="20971520"
+		p:maxInMemorySize="20971520"
+	/>
+	
+	<!-- message-converter 참조 : Jaxb 의 @XmlRootElement 무시, classpath 로 표기 -->
+	<bean id="xstreamMarshaller" class="org.springframework.oxm.xstream.XStreamMarshaller"
+		p:autodetectAnnotations="true"
+	/>
+	
+	<!-- message-converter 참조 : Xstream @XStreamAlias 인식 불가 -->
+	<bean id="jaxbMarshaller" class="kr.co.test.common.spring.util.Jaxb2MarshallerCustom" factory-method="jaxb2Marshaller">
+		<constructor-arg>
+			<value>kr.co.test</value>
+		</constructor-arg>
+	</bean>
+	
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<ref bean="localeChangeInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
+	<import resource="view-config.xml"/>
+	<import resource="contentNegotiation-config.xml"/>
+	<import resource="tiles-config.xml"/>		<!-- JUnit 테스트 시, 주석 처리 -->
+	<import resource="locale-config.xml"/>
+	
+	<import resource="templateEngine-config.xml"/>
+	
+</beans>

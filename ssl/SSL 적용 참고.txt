@@ -1,0 +1,18 @@
+접속 테스트용으로 암호화 지원 X
+
+------------
+1. 인증서 생성
+------------
+	cd %JAVA_HOME%\bin
+	keytool -genkey -alias tomcat -keyalg RSA -keystore %USERPROFILE%\tomcat.keystore
+
+------------
+2. 톰캣 설정
+------------
+	server.xml의 ssl connector 수정
+		- 테스트용 Self 인증서 이므로 Http11NioProtocol 사용
+
+    <Connector port="8443" protocol="org.apache.coyote.http11.Http11NioProtocol"
+               maxThreads="150" SSLEnabled="true" scheme="https" secure="true"
+               clientAuth="false" sslProtocol="TLS"
+               keystoreFile="${user.home}/tomcat.keystore" keystorePass="qwer1234" />

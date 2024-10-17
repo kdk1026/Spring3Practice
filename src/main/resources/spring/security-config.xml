@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+	">
+	
+	<bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+	
+	<security:global-method-security secured-annotations="enabled" pre-post-annotations="enabled" />
+
+<!-- Order 1 -->
+	<security:http pattern="/api/login/auth" security="none"></security:http>
+	
+	<security:http pattern="/api/**" use-expressions="true"
+		create-session="stateless" authentication-manager-ref="restAuthManager" entry-point-ref="restAuthenticationEntryPoint">
+		
+		<security:headers>
+			<security:cache-control />
+		</security:headers>
+		
+		<security:intercept-url pattern="/api/**" access="isAuthenticated()" />
+		
+		<security:logout logout-url="/api/logout" success-handler-ref="restLogoutSuccessHandler" />
+		<security:access-denied-handler ref="restAccessDeniedHandler" />
+
+		<security:custom-filter ref="jwtAuthenticationFilter" before="FORM_LOGIN_FILTER" />
+	</security:http>
+
+	<bean id="restLogoutSuccessHandler" class="kr.co.test.rest.login.security.handler.RestLogoutSuccessHandler" />
+	<bean id="restAuthenticationEntryPoint" class="kr.co.test.rest.login.security.entrypoint.RestAuthenticationEntryPoint" />
+	<bean id="restAccessDeniedHandler" class="kr.co.test.rest.login.security.handler.RestAccessDeniedHandler" />
+	
+	<bean id="jwtAuthenticationSuccessHandler" class="kr.co.test.rest.login.security.handler.JwtAuthenticationSuccessHandler" />
+
+	<bean id="jwtAuthenticationProvider" class="kr.co.test.rest.login.security.JwtAuthenticationProvider" />
+	
+	<bean id="jwtAuthenticationFilter" class="kr.co.test.rest.login.security.JwtAuthenticationTokenFilter"
+		p:authenticationManager-ref="restAuthManager"
+		p:authenticationSuccessHandler-ref="jwtAuthenticationSuccessHandler"
+	/>
+	
+	<security:authentication-manager id="restAuthManager">
+		<security:authentication-provider ref="jwtAuthenticationProvider" />
+	</security:authentication-manager>
+	
+<!-- Order 2 -->
+	<security:http pattern="/resources/**" security="none"></security:http>
+	<security:http pattern="/webjars/**" security="none"></security:http>
+	<security:http pattern="/console/**" security="none"></security:http>
+
+	<security:http auto-config="false" use-expressions="true"
+		create-session="never" authentication-manager-ref="pageAuthManager">
+
+		<security:headers>
+			<security:cache-control />
+			<security:content-type-options />
+			<security:hsts include-subdomains="true" max-age-seconds="31536000" />
+			<security:frame-options policy="SAMEORIGIN" />
+			<security:xss-protection block="false" />
+		</security:headers>
+
+		<security:csrf />
+
+		<security:intercept-url pattern="/**" access="permitAll" />
+		<security:intercept-url pattern="/admin/login" access="permitAll" />
+		<security:intercept-url pattern="/admin/**" access="isAuthenticated()" />
+		<security:intercept-url pattern="/admin/managerRemoveProcess" access="hasRole('ROLE_ADMIN')" />
+		
+		<!-- XXX: 로그인 처리만 https로 하는 경우 -->
+		<!--  
+		<security:intercept-url pattern="/**" access="permitAll" requires-channel="http" />
+		<security:intercept-url pattern="/admin/loginProc" requires-channel="https"  />
+		-->
+
+		<security:form-login
+			login-page="/admin/login" default-target-url="/admin/login/loginProc"
+			authentication-failure-url="/admin/login?invalid=Y" login-processing-url="/admin/login/auth"
+			username-parameter="username" password-parameter="password"
+		/>
+		
+		<!-- XXX: 404 오류로 Controller 수작업 (Java 6, GET) -->
+		<!--  
+		<security:logout
+			logout-url="/admin_logout" logout-success-url="/admin/login?isTimeOut=Y"
+			invalidate-session="true"
+			delete-cookies="JSESSIONID
+		/>
+		-->
+		<security:remember-me
+			remember-me-parameter="remember-me" key="steady"
+			token-validity-seconds="86400" data-source-ref="h2_dataSource"
+		/>
+		<!-- Referenced bean 'h2_dataSource' not found : XML Config의 한계, 동작에 이상은 없음 -->
+		
+		<security:session-management invalid-session-url="/admin/login" session-fixation-protection="none">
+			<security:concurrency-control
+				max-sessions="2" expired-url="/admin/login" error-if-maximum-exceeded="true"
+			/>
+		</security:session-management>
+	</security:http>
+	
+	<bean id="pageAuthenticationProvider" class="kr.co.test.page.login.security.PageAuthenticationProvider" />
+
+	<security:authentication-manager id="pageAuthManager">
+		<security:authentication-provider ref="pageAuthenticationProvider" />
+	</security:authentication-manager>
+	
+	<!--  
+	<security:authentication-manager id="pageAuthManager">
+		<security:authentication-provider>
+			<security:password-encoder ref="passwordEncoder" />
+			<security:jdbc-user-service data-source-ref="dataSource"
+				users-by-username-query=
+					"select username, password, enabled from member_account where username=?"
+				authorities-by-username-query=
+					"select username, role from member_roles where username=?"
+			/>
+		</security:authentication-provider>
+	</security:authentication-manager>
+	-->
+	
+</beans>

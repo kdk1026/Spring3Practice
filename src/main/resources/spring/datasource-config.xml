@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+	">
+
+	<context:property-placeholder location="classpath:properties/jdbc.properties" />
+	
+	<!-- H2 -->
+	<!-- jdbc.properties 에서 password 암호화로 관리하는 경우 : kr.co.test.common.db.CustomHikariConfig -->
+	<bean id="h2_hikariConfig" class="com.zaxxer.hikari.HikariConfig"
+		p:driverClassName="${h2.jdbc.driver}"
+		p:jdbcUrl="${h2.jdbc.url}"
+		p:username="${h2.jdbc.username}"
+		p:password="${h2.jdbc.password}"
+		p:connectionTestQuery="SELECT 1"
+	/>
+	<bean id="h2_dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+		<constructor-arg ref="h2_hikariConfig" />
+	</bean>
+
+	<bean id="h2_transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+		p:dataSource-ref="h2_dataSource"
+	/>
+
+	<import resource="context-transaction.xml" />
+	
+	<bean id="flyway" class="org.flywaydb.core.Flyway" init-method="migrate"
+		p:baselineOnMigrate="true"
+		p:dataSource-ref="h2_dataSource" 
+	/>
+
+</beans>

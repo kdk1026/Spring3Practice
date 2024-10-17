@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemesh>
+
+	<mapping path="/layout/sitemesh" decorator="/WEB-INF/jsp/template/sample/sample_decorator.jsp" />
+
+	<mapping>
+		<path>/admin/login</path>
+		<path>/WEB-INF/jsp/admin/login/*</path>			<!-- WebLogic 전용 : decorator 인식 문제 해결 -->
+		<exclue>true</exclue>
+	</mapping>
+	<mapping>
+		<path>/admin/*</path>		
+		<path>/WEB-INF/jsp/admin/admin/*</path>			<!-- WebLogic 전용 : decorator 인식 문제 해결 -->
+		<decorator>/WEB-INF/jsp/template/admin/base_decorator.jsp</decorator>
+	</mapping>
+	
+</sitemesh>

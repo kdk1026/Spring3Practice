@@ -1,0 +1,524 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.springframework.samples.service.service</groupId>
+  <artifactId>Spring3Practice</artifactId>
+  <version>0.1</version>
+  <packaging>war</packaging>
+  
+    <properties>
+    	<m2eclipse.wtp.contextRoot>/</m2eclipse.wtp.contextRoot>
+
+		<!-- Generic properties -->
+		<java.version>1.6</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		
+		<!-- Web -->
+		<jsp.version>2.2</jsp.version>
+		<jstl.version>1.2</jstl.version>
+		<servlet.version>2.5</servlet.version>
+		
+
+		<!-- Spring -->
+		<spring-framework.version>3.2.18.RELEASE</spring-framework.version>
+		<spring-security.version>3.2.10.RELEASE</spring-security.version>
+
+		<!-- Logging -->
+		<logback.version>1.1.9</logback.version>
+		<slf4j.version>1.7.6</slf4j.version>
+
+		<!-- Test -->
+		<junit.version>4.11</junit.version>
+		
+		<tiles.version>3.0.8</tiles.version>
+
+	</properties>
+	
+	<profiles>
+		<profile>
+			<id>local</id>
+			<properties>
+				<env>local</env>
+			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
+		<profile>
+			<id>dev</id>
+			<properties>
+				<env>dev</env>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<env>prod</env>
+			</properties>
+		</profile>
+	</profiles>
+	
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>src/main/resources-${env}</directory>
+			</resource>
+		</resources>
+	
+		<finalName>${artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+	</build>
+	
+	<dependencies>
+	
+		<dependency>
+			<groupId>kdk</groupId>
+			<artifactId>CommonJava6</artifactId>
+			<version>0.1</version>
+		</dependency>
+		
+		<!-- Other Web dependencies -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>${jstl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>${servlet.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>${jsp.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<!-- Logging with SLF4J & LogBack -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		
+		<!-- Aspectj & Aspectj Proxy -->
+		<dependency>
+		    <groupId>org.aspectj</groupId>
+		    <artifactId>aspectjweaver</artifactId>
+		    <version>1.7.2</version>
+		</dependency>
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib-nodep</artifactId>
+			<version>3.2.5</version>
+		</dependency>
+	
+<!-- Spring -->
+		<!-- Spring MVC -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring-framework.version}</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-context-support -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-context-support</artifactId>
+		    <version>${spring-framework.version}</version>
+		</dependency>
+		
+		<!-- Spring and Transactions -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${spring-framework.version}</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-aspects -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-aspects</artifactId>
+		    <version>${spring-framework.version}</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-jdbc</artifactId>
+		    <version>${spring-framework.version}</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-orm -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-orm</artifactId>
+		    <version>${spring-framework.version}</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-oxm -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-oxm</artifactId>
+		    <version>${spring-framework.version}</version>
+		</dependency>
+<!-- // Spring -->
+
+<!-- Spring Security -->
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-web -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-web</artifactId>
+		    <version>${spring-security.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-config -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-config</artifactId>
+		    <version>${spring-security.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-taglibs -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-taglibs</artifactId>
+		    <version>${spring-security.version}</version>
+		</dependency>
+<!-- // Spring Security -->
+
+<!-- Database -->
+		<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+		<dependency>
+		    <groupId>com.h2database</groupId>
+		    <artifactId>h2</artifactId>
+		    <version>1.4.191</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.flywaydb/flyway-core -->
+		<dependency>
+		    <groupId>org.flywaydb</groupId>
+		    <artifactId>flyway-core</artifactId>
+		    <version>3.2.1</version>
+		</dependency>
+<!-- //Database -->
+
+<!-- Data Access -->
+		<!-- https://mvnrepository.com/artifact/com.zaxxer/HikariCP-java6 -->
+		<dependency>
+		    <groupId>com.zaxxer</groupId>
+		    <artifactId>HikariCP-java6</artifactId>
+		    <version>2.3.13</version>
+		    <exclusions>
+		    	<exclusion>
+		    		<groupId>org.slf4j</groupId>
+		    		<artifactId>slf4j-api</artifactId>
+		    	</exclusion>
+		    </exclusions>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.mybatis/mybatis -->
+		<dependency>
+		    <groupId>org.mybatis</groupId>
+		    <artifactId>mybatis</artifactId>
+		    <version>3.4.5</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.mybatis/mybatis-spring -->
+		<dependency>
+		    <groupId>org.mybatis</groupId>
+		    <artifactId>mybatis-spring</artifactId>
+		    <version>1.3.1</version>
+		</dependency>
+<!-- Data Access -->
+
+<!-- Template Framework -->
+		<!-- https://mvnrepository.com/artifact/org.sitemesh/sitemesh -->
+		<dependency>
+		    <groupId>org.sitemesh</groupId>
+		    <artifactId>sitemesh</artifactId>
+		    <version>3.0.1</version>
+		</dependency>
+		
+        <!-- https://mvnrepository.com/artifact/org.apache.tiles/tiles-jsp -->
+        <dependency>
+            <groupId>org.apache.tiles</groupId>
+            <artifactId>tiles-jsp</artifactId>
+            <version>${tiles.version}</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>org.slf4j</groupId>
+    				<artifactId>slf4j-api</artifactId>
+            	</exclusion>
+            </exclusions>
+        </dependency>
+        
+        <!-- https://mvnrepository.com/artifact/org.apache.tiles/tiles-core -->
+        <dependency>
+            <groupId>org.apache.tiles</groupId>
+            <artifactId>tiles-core</artifactId>					
+            <version>${tiles.version}</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>org.slf4j</groupId>
+    				<artifactId>slf4j-api</artifactId>
+            	</exclusion>
+            </exclusions>
+        </dependency>
+        
+		<!-- https://mvnrepository.com/artifact/org.apache.tiles/tiles-el -->
+		<dependency>
+		    <groupId>org.apache.tiles</groupId>
+		    <artifactId>tiles-el</artifactId>
+            <version>${tiles.version}</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>org.slf4j</groupId>
+    				<artifactId>slf4j-api</artifactId>
+            	</exclusion>
+            </exclusions>
+		</dependency>
+<!-- // Template Framework -->
+
+<!-- Render -->
+		<!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
+		<dependency>
+		    <groupId>javax.xml.bind</groupId>
+		    <artifactId>jaxb-api</artifactId>
+		    <version>2.1</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/net.sf.jxls/jxls-core -->
+		<dependency>
+		    <groupId>net.sf.jxls</groupId>
+		    <artifactId>jxls-core</artifactId>
+		    <version>1.0.6</version>
+		    <exclusions>
+		    	<exclusion>
+				    <groupId>commons-beanutils</groupId>
+				    <artifactId>commons-beanutils</artifactId>
+		    	</exclusion>
+		    	<exclusion>
+				    <groupId>commons-collections</groupId>
+				    <artifactId>commons-collections</artifactId>
+		    	</exclusion>
+		    	<exclusion>
+				    <groupId>commons-digester</groupId>
+				    <artifactId>commons-digester</artifactId>
+		    	</exclusion>
+		    	<exclusion>
+				    <groupId>commons-logging</groupId>
+				    <artifactId>commons-logging</artifactId>
+		    	</exclusion>
+		    	<exclusion>
+				    <groupId>org.apache.poi</groupId>
+				    <artifactId>poi</artifactId>
+		    	</exclusion>
+		    	<exclusion>
+				    <groupId>org.apache.poi</groupId>
+				    <artifactId>poi-ooxml</artifactId>
+		    	</exclusion>
+		    </exclusions>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/com.lowagie/itext -->
+		<dependency>
+		    <groupId>com.lowagie</groupId>
+		    <artifactId>itext</artifactId>
+		    <version>2.1.7</version>
+		</dependency>
+<!-- // Render -->
+
+<!-- Etc -->
+		<!-- https://mvnrepository.com/artifact/org.bgee.log4jdbc-log4j2/log4jdbc-log4j2-jdbc4 -->
+		<dependency>
+		    <groupId>org.bgee.log4jdbc-log4j2</groupId>
+		    <artifactId>log4jdbc-log4j2-jdbc4</artifactId>
+		    <version>1.16</version>
+		</dependency>
+		
+		<!-- https://github.com/naver/lucy-xss-servlet-filter -->
+		<dependency>
+		    <groupId>com.navercorp.lucy</groupId>
+		    <artifactId>lucy-xss-servlet</artifactId>
+		    <version>2.0.0</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
+		<dependency>
+		    <groupId>io.jsonwebtoken</groupId>
+		    <artifactId>jjwt</artifactId>
+		    <version>0.6.0</version>
+		    <exclusions>
+		    	<exclusion>
+		    		<groupId>com.fasterxml.jackson.core</groupId>
+		    		<artifactId>jackson-databind</artifactId>
+		    	</exclusion>
+		    </exclusions>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/net.sf.ehcache/ehcache -->
+		<dependency>
+		    <groupId>net.sf.ehcache</groupId>
+		    <artifactId>ehcache</artifactId>
+		    <version>2.10.4</version>
+		    <exclusions>
+		    	<exclusion>
+				    <groupId>org.slf4j</groupId>
+				    <artifactId>slf4j-api</artifactId>
+		    	</exclusion>
+		    </exclusions>
+		</dependency>
+<!-- //Etc -->
+
+<!-- Template Engine -->
+		<!-- https://mvnrepository.com/artifact/org.apache.velocity/velocity -->
+		<dependency>
+		    <groupId>org.apache.velocity</groupId>
+		    <artifactId>velocity</artifactId>
+		    <version>1.7</version>
+		    <exclusions>
+		    	<exclusion>
+				    <groupId>commons-collections</groupId>
+				    <artifactId>commons-collections</artifactId>
+		    	</exclusion>
+		    </exclusions>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.freemarker/freemarker -->
+		<dependency>
+		    <groupId>org.freemarker</groupId>
+		    <artifactId>freemarker</artifactId>
+		    <version>2.3.23</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.thymeleaf/thymeleaf-spring3 -->
+		<dependency>
+		    <groupId>org.thymeleaf</groupId>
+		    <artifactId>thymeleaf-spring3</artifactId>
+		    <version>3.0.9.RELEASE</version>
+		    <exclusions>
+		    	<exclusion>
+				    <groupId>org.slf4j</groupId>
+				    <artifactId>slf4j-api</artifactId>
+		    	</exclusion>
+		    </exclusions>
+		</dependency>
+<!-- // Template Engine -->
+		
+<!-- Test -->
+		<!-- Test Artifacts -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring-framework.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+<!-- // Test -->
+
+<!-- WebJar -->
+<!-- WAS Servlet 3.0 이상에서만 동작, 이하는 bower로 관리 -->		
+		<!-- https://mvnrepository.com/artifact/org.webjars.bower/jquery -->
+		<dependency>
+		    <groupId>org.webjars.bower</groupId>
+		    <artifactId>jquery</artifactId>
+		    <version>3.2.1</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.webjars.bower/bootstrap -->
+		<dependency>
+		    <groupId>org.webjars.bower</groupId>
+		    <artifactId>bootstrap</artifactId>
+		    <version>3.3.7</version>
+		    <exclusions>
+		    	<exclusion>
+				    <groupId>org.webjars.bower</groupId>
+				    <artifactId>jquery</artifactId>		    	
+		    	</exclusion>
+		    </exclusions>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.webjars.bower/metisMenu -->
+		<dependency>
+		    <groupId>org.webjars.bower</groupId>
+		    <artifactId>metisMenu</artifactId>
+		    <version>2.7.0</version>
+		    <exclusions>
+		    	<exclusion>
+				    <groupId>org.webjars.bower</groupId>
+				    <artifactId>jquery</artifactId>		    	
+		    	</exclusion>
+		    </exclusions>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.webjars.bower/datatables -->
+		<dependency>
+		    <groupId>org.webjars.bower</groupId>
+		    <artifactId>datatables</artifactId>
+		    <version>1.10.16</version>
+		    <exclusions>
+		    	<exclusion>
+				    <groupId>org.webjars.bower</groupId>
+				    <artifactId>jquery</artifactId>		    	
+		    	</exclusion>
+		    </exclusions>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.webjars.bower/datatables-responsive -->
+		<dependency>
+		    <groupId>org.webjars.bower</groupId>
+		    <artifactId>datatables-responsive</artifactId>
+		    <version>2.2.1</version>
+		    <exclusions>
+		    	<exclusion>
+				    <groupId>org.webjars.bower</groupId>
+				    <artifactId>jquery</artifactId>		    	
+		    	</exclusion>
+		    </exclusions>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.webjars.bower/font-awesome -->
+		<dependency>
+		    <groupId>org.webjars.bower</groupId>
+		    <artifactId>font-awesome</artifactId>
+		    <version>4.7.0</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.webjars.bower/jquery-mask-plugin -->
+		<dependency>
+		    <groupId>org.webjars.bower</groupId>
+		    <artifactId>jquery-mask-plugin</artifactId>
+		    <version>1.14.12</version>
+		</dependency>
+<!-- //WebJar -->
+
+	</dependencies>	
+</project>

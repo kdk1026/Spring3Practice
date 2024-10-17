@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+	">
+
+	<bean class="org.springframework.web.servlet.view.BeanNameViewResolver"
+		p:order="0"
+	/>
+		
+	<bean id="xstreamView" class="org.springframework.web.servlet.view.xml.MarshallingView"
+		p:marshaller-ref="xstreamMarshaller"
+		p:modelKey="xmlData"
+	/>
+	<bean id="jaxbView" class="org.springframework.web.servlet.view.xml.MarshallingView"
+		p:marshaller-ref="jaxbMarshaller"
+		p:modelKey="xmlData"
+	/>
+	
+	<bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
+	
+	<bean id="jsonpView" class="kr.co.test.common.spring.view.JacksonJsonpView" />
+	
+	<bean id="downloadView" class="kr.co.test.common.spring.view.FileDownloadView" />
+	
+	<bean id="excelListView" class="kr.co.test.common.spring.view.excel.ExcelListView" />
+	<bean id="jxlsListView" class="kr.co.test.common.spring.view.excel.JxlsListView" />
+	
+	<bean id="pdfListView" class="kr.co.test.common.spring.view.PdfListView" />		
+	
+</beans>
